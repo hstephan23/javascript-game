@@ -1,6 +1,33 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 
+function ClassStats(characterName, type) {
+    this.characterName = characterName;
+    this.type = type;
+    this.strength = 0;
+    this.health = 0;
+    this.money = 20;
+}
+
+ClassStats.prototype.startingValues = function () {
+    if (this.type === "Warrior") {
+        this.strength = 20;
+        this.health = 100;
+    } else if (this.type === "Archer") {
+        this.strength = 10;
+        this.health = 150;
+    } else if (this.type === "Wizard") {
+        this.strength = 15;
+        this.health = 125;
+    } else {
+        console.log("error");
+    }
+}
+
+ClassStats.prototype.introduction = function () {
+    console.log(`Hello ${this.characterName}! Your class is: ${this.type}. You have ${this.health} health and a strength of ${this.strength}. Your starting money is ${this.money}`);
+}
+
 
 inquirer
     .prompt([
@@ -17,8 +44,7 @@ inquirer
         }
     ])
     .then((data) => {
-        const fileName = `${data.name.toLowerCase().split(" ").join("")}.json`;
-        fs.writeFile(fileName, JSON.stringify(data, null, "\t"), (error) => 
-            error ? console.log(error) : console.log("Success!")
-    )
+        const storedValues = new ClassStats(data.name, data.class);
+        storedValues.startingValues();
+        storedValues.introduction();
 });
