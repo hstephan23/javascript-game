@@ -58,6 +58,22 @@ ClassStats.prototype.firstChoice = function (decision) {
     }
 }
 
+ClassStats.prototype.death = function () {
+    console.log(`Thank you for your adventure ${this.name}! You had ${this.money} when you died!`)
+}
+
+ClassStats.prototype.orcChoice = function (decision, value) {
+    if (decision.firstOrc === "Run") {
+        console.log("You get away safely, but trip down a hill in the process. You end up in the middle of a foreset.");
+    } else if (decision.firstOrc === "Fight") {
+        console.log("You are brave but foolish, you perish.")
+        value.death();
+    } else if (decision.firstOrc === "") {
+        console.log("You are paralyzed with fear, the orc stares you down before beheading you.")
+        value.death();
+    }
+}
+
 inquirer
     .prompt([
         {
@@ -77,7 +93,13 @@ inquirer
         storedValues.startingValues();
         storedValues.introduction();
         storedValues.listChoice("firstChoice", "You come across a fork in the path, do you go left, right, or turn around?", "Left", "Right", "Turn Around")
-            .then((userAnswer) => {
-                storedValues.firstChoice(userAnswer);
+            .then((pathAnswer) => {
+                storedValues.firstChoice(pathAnswer);
+                if (pathAnswer.firstChoice === "Left") {
+                    storedValues.listChoice("firstOrc", "What do you do?", "Run", "Fight", "Nothing")
+                        .then((orcAnswer) => {
+                            storedValues.orcChoice(orcAnswer, storedValues);
+                        })
+                }
             })
 });
